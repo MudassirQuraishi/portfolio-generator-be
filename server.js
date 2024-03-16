@@ -1,10 +1,11 @@
 require("dotenv").config();
+const moment = require("moment");
 const app = require("./app");
 const config = require("./config/config");
-const Logger = require("./config/logger");
+const { Logger } = require("./config/logger");
 
 const server = app.listen(config.port, () => {
-    const serverStartTime = new Date().toLocaleString();
+    const serverStartTime = moment().format();
     Logger.log("info", {
         message: `Backend server started at port ${config.port} on ${serverStartTime}`,
     });
