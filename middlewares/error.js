@@ -1,5 +1,5 @@
-const Logger = require("../config/logger");
-const errorHandler = (err, req, res, next) => {
+const { Logger } = require("../config/logger");
+exports.errorHandler = (err, req, res, next) => {
     Logger.log("error", {
         req: req,
         errorCode: err.name || "INTERNAL_SERVER_ERROR",
@@ -13,4 +13,3 @@ const errorHandler = (err, req, res, next) => {
         },
     });
 };
-module.exports = errorHandler;

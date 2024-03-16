@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const emailConfig = require("../config/email.config");
 const config = require("../config/config");
+const { verifyEmailTemplate } = require("../templates/emailTemplates");
 
 const transport = nodemailer.createTransport({
     host: emailConfig.SMTP_HOST,
@@ -11,21 +12,15 @@ const transport = nodemailer.createTransport({
     },
 });
 
-const sendEmail = async (to, subject, text) => {
-    const msg = { from: emailConfig.EMAIL_FROM, to, subject, text };
+const sendEmail = async (to, subject, html) => {
+    const msg = { from: emailConfig.EMAIL_FROM, to, subject, html };
     await transport.sendMail(msg);
 };
+exports.sendEmail = sendEmail;
 
-const sendVerificationEmail = async (to, token) => {
+exports.sendVerificationEmail = async (to, token) => {
     const subject = "Email Verification";
-    const verificationEmailUrl = `http://localhost:${config.port}/auth/v1/verify-email/${token}`;
-    const text = `Dear user,
-        To verify your email, click on this link: ${verificationEmailUrl}
-        If you did not create an account, then ignore this email.`;
-    await sendEmail(to, subject, text);
-};
-module.exports = {
-    transport,
-    sendEmail,
-    sendVerificationEmail,
+    const verificationEmailUrl = `${config.api_url}:${config.port}/auth/v1/verify-email/${token}`;
+    const html = verifyEmailTemplate(verificationEmailUrl);
+    await sendEmail(to, subject, html);
 };

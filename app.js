@@ -1,7 +1,7 @@
 const express = require("express");
-const connectDB = require("./config/database");
+const { connectDB } = require("./config/database");
 const authRoute = require("./routes/authRoute");
-const errorHandler = require("./middlewares/error");
+const { errorHandler } = require("./middlewares/error");
 
 const app = express();
 connectDB();

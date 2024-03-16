@@ -1,20 +1,24 @@
 const { v4: uuidv4 } = require("uuid");
 const mongoose = require("mongoose");
 
-const userService = require("../services/userService");
-const emailService = require("../services/emailServices");
-const authService = require("../services/authService");
-const catchAsync = require("../util/async");
+const {
+    createUser,
+    updateVerificationToken,
+    verifyUser,
+} = require("../services/userService");
+const { sendVerificationEmail } = require("../services/emailServices");
+const { loginUserWithEmailAndPassword } = require("../services/authService");
+const { catchAsync } = require("../util/async");
 const ApiError = require("../util/ApiError");
 
 const signup = catchAsync(async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-        const user = await userService.createUser(req.body, { session });
+        const user = await createUser(req.body, { session });
         const token = uuidv4();
-        await userService.updateVerificationToken(user, token, { session });
-        await emailService.sendVerificationEmail(user.email, token);
+        await updateVerificationToken(user, token, { session });
+        await sendVerificationEmail(user.email, token);
         await session.commitTransaction();
         return res.status(201).json({ success: true });
     } catch (error) {
@@ -27,15 +31,12 @@ const signup = catchAsync(async (req, res) => {
 
 const login = catchAsync(async (req, res) => {
     const { email, password } = req.body;
-    const user = await authService.loginUserWithEmailAndPassword(
-        email,
-        password
-    );
+    const user = await loginUserWithEmailAndPassword(email, password);
     return res.status(200).json({ success: true, user: user.toJSON() });
 });
 
 const verifyEmail = catchAsync(async (req, res) => {
-    const user = await userService.verifyUser(req.params.token);
+    const user = await verifyUser(req.params.token);
     if (!user) {
         res.status(204).json();
     }

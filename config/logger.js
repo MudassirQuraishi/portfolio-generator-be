@@ -74,7 +74,7 @@ const prodFileTransport = new transports.File({
     ),
 });
 
-const Logger = createLogger({
+exports.Logger = createLogger({
     levels: {
         error: 0,
         warn: 1,
@@ -90,5 +90,3 @@ const Logger = createLogger({
             : devFileTransport,
     ],
 });
-
-module.exports = Logger;
