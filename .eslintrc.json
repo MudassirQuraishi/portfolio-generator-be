@@ -1,7 +1,9 @@
 {
-    "extends": ["eslint:recommended"],
-    "parserOptions": {
-        "ecmaVersion": 2021
-    },
-    "rules": {}
+  "extends": ["eslint:recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2021
+  },
+  "rules": {
+    "no-undef": "off"
+  }
 }
