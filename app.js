@@ -3,11 +3,12 @@ const cors = require('cors');
 const { connectDB } = require('./config/database');
 const authRoute = require('./routes/authRoute');
 const { errorHandler } = require('./middlewares/error');
+const config = require('./config/config');
 
 const app = express();
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: config.origin,
   })
 );
 connectDB();
